@@ -22,3 +22,10 @@ alembic revision --autogenerate -m "mensagem"
 alembic upgrade head
 ```
 
+
+## Testes
+Para executar a suíte de testes utilize o [pytest](https://pytest.org/):
+
+```bash
+pytest
+```
