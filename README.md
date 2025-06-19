@@ -50,4 +50,13 @@ alembic upgrade head
 Esses comandos geram arquivos de revisão na pasta `alembic` e aplicam o
 upgrade para a versão mais recente do schema.
 
+## MCP e n8n
+
+Além das rotas REST tradicionais, a aplicação expõe a rota `/mcp` que segue o
+**Model Context Protocol** utilizando JSON-RPC 2.0 sobre **Server-Sent Events**.
+O endpoint `/mcp/tools` retorna a lista de operações disponíveis como "tools",
+permitindo que o nó **MCP Client Tool** do n8n descubra cada operação CRUD.
+Para invocar uma operação envie uma requisição JSON-RPC para `/mcp` e aguarde o
+resultado ser emitido via SSE.
+
 
