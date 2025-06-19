@@ -23,7 +23,8 @@ pip install sqlalchemy python-dotenv alembic
 ```
 
 4. Copie o arquivo `.env.example` para `.env` e ajuste os valores de `JWT_SECRET`
-   e `DB_URL` conforme sua necessidade.
+   e `DB_URL` conforme sua necessidade. A chave `JWT_SECRET` é utilizada para
+   assinar tokens JWT no algoritmo **HS256**.
 
 ## Banco de dados
 
@@ -49,6 +50,13 @@ alembic upgrade head
 ```
 Esses comandos geram arquivos de revisão na pasta `alembic` e aplicam o
 upgrade para a versão mais recente do schema.
+
+## Autenticação JWT
+
+A aplicação protege as rotas REST utilizando tokens JWT. Obtenha um token em
+`/token` e use o botão **Authorize** do Swagger UI informando o valor no formato
+`Bearer <token>`. A chave utilizada para assinar os tokens é configurada através
+da variável `JWT_SECRET` presente no `.env`.
 
 ## MCP e n8n
 
