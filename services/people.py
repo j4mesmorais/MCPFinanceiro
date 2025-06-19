@@ -6,8 +6,11 @@ from sqlalchemy.exc import NoResultFound
 from src.mcp_financeiro.models import Person
 
 
-def create_person(db: Session, name: str, email: str) -> Person:
-    person = Person(name=name, email=email)
+def create_person(db: Session, **kwargs) -> Person:
+    """Create a new Person. Only the ``name`` field is required."""
+    if "name" not in kwargs or not kwargs["name"]:
+        raise ValueError("name is required")
+    person = Person(**kwargs)
     db.add(person)
     db.commit()
     db.refresh(person)
@@ -23,9 +26,10 @@ def list_people(db: Session) -> list[Person]:
 
 
 def update_person(db: Session, person_id: int, **kwargs) -> Person:
+    """Update a Person with the provided fields."""
     person = db.query(Person).filter(Person.id == person_id).one()
     for key, value in kwargs.items():
-        if hasattr(person, key):
+        if value is not None and hasattr(person, key):
             setattr(person, key, value)
     db.commit()
     db.refresh(person)

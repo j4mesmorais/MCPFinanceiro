@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
-from datetime import timedelta
+from datetime import datetime, timedelta, date
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -17,13 +17,35 @@ app = FastAPI()
 app.include_router(mcp_router, dependencies=[Depends(verify_token)])
 
 
-class PersonCreate(BaseModel):
+class PersonBase(BaseModel):
     name: str
-    email: str
+    email: str | None = None
+    celular: str | None = None
+    endereco: str | None = None
+    tipo: str | None = None
+    status: str | None = None
+    cpf_cnpj: str | None = None
+    dt_nascimento: date | None = None
 
 
-class PersonOut(PersonCreate):
+class PersonCreate(PersonBase):
+    pass
+
+
+class PersonUpdate(BaseModel):
+    name: str | None = None
+    email: str | None = None
+    celular: str | None = None
+    endereco: str | None = None
+    tipo: str | None = None
+    status: str | None = None
+    cpf_cnpj: str | None = None
+    dt_nascimento: date | None = None
+
+
+class PersonOut(PersonBase):
     id: int
+    created_at: datetime
 
     class Config:
         orm_mode = True
@@ -47,7 +69,7 @@ def create(
     db: Session = Depends(get_session),
     _: dict = Depends(verify_token),
 ):
-    return create_person(db, name=person.name, email=person.email)
+    return create_person(db, **person.dict())
 
 
 @app.get("/people", response_model=list[PersonOut])
@@ -70,11 +92,12 @@ def read_one(
 @app.put("/people/{person_id}", response_model=PersonOut)
 def update(
     person_id: int,
-    person: PersonCreate,
+    person: PersonUpdate,
     db: Session = Depends(get_session),
     _: dict = Depends(verify_token),
 ):
-    person_obj = update_person(db, person_id, name=person.name, email=person.email)
+    update_data = {k: v for k, v in person.dict().items() if v is not None}
+    person_obj = update_person(db, person_id, **update_data)
     return person_obj
 
 
