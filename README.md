@@ -63,6 +63,11 @@ alembic upgrade head
 Esses comandos geram arquivos de revisão na pasta `alembic` e aplicam o
 upgrade para a versão mais recente do schema.
 
+O arquivo `alembic/env.py` já inclui uma função `should_include_object` que
+inibe a geração automática de `DropTable`. Assim, tabelas existentes não são
+removidas quando você executa `alembic revision --autogenerate`. Caso precise
+excluir uma tabela, edite manualmente a revisão gerada.
+
 ### Atualizando o banco de dados
 
 Quando novas colunas ou tabelas são adicionadas aos modelos, é necessário gerar

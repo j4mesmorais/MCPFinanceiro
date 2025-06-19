@@ -12,6 +12,16 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from database import Base
 target_metadata = Base.metadata
 
+
+def should_include_object(obj, name, type_, reflected, compare_to):
+    """Return True if ``obj`` should be included during autogeneration."""
+    # Skip dropping tables that exist in the database but are missing from the
+    # SQLAlchemy models. This prevents ``DropTable`` operations from being
+    # generated automatically.
+    if type_ == "table" and compare_to is None:
+        return False
+    return True
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -49,6 +59,7 @@ def run_migrations_offline() -> None:
     context.configure(
         url=url,
         target_metadata=target_metadata,
+        include_object=should_include_object,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
     )
@@ -72,7 +83,9 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection,
+            target_metadata=target_metadata,
+            include_object=should_include_object,
         )
 
         with context.begin_transaction():
