@@ -44,12 +44,38 @@ Caso deseje versionar e aplicar mudanças de esquema no banco, utilize o
 ```bash
 pip install sqlalchemy alembic
 alembic init alembic
-# configure o arquivo alembic.ini e gere as revisões
+# edite o arquivo `alembic/env.py` para importar a `Base` do projeto e definir
+# `target_metadata`. Isso é necessário para que o comando `--autogenerate`
+# consiga detectar as alterações nos modelos.
+#
+# ```python
+# from pathlib import Path
+# import sys
+# sys.path.append(str(Path(__file__).resolve().parents[1]))
+# from database import Base
+# target_metadata = Base.metadata
+# ```
+#
+# Com o `env.py` configurado, ajuste o `alembic.ini` e gere as revisões
 alembic revision --autogenerate -m "mensagem"
 alembic upgrade head
 ```
 Esses comandos geram arquivos de revisão na pasta `alembic` e aplicam o
 upgrade para a versão mais recente do schema.
+
+### Atualizando o banco de dados
+
+Quando novas colunas ou tabelas são adicionadas aos modelos, é necessário gerar
+uma revisão e aplicá-la para manter o banco sincronizado:
+
+```bash
+alembic revision --autogenerate -m "minhas alterações"
+alembic upgrade head
+```
+
+Se a aplicação reportar `sqlalchemy.exc.OperationalError` informando que uma
+coluna não existe (por exemplo `no such column: people.celular`), o banco de
+dados provavelmente está desatualizado e precisa das migrações acima.
 
 ## Autenticação JWT
 
