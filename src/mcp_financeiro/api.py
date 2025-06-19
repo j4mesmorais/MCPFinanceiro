@@ -5,12 +5,14 @@ from sqlalchemy.orm import Session
 from database import get_session, Base, engine
 from .models import Person
 from services.people import create_person, get_person, list_people, update_person, delete_person
+from .mcp import router as mcp_router
 
 
 # Create database tables if they don't exist
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+app.include_router(mcp_router)
 
 
 class PersonCreate(BaseModel):
