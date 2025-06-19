@@ -1,6 +1,9 @@
+"""SQLAlchemy session and engine configuration."""
+
 import os
+from typing import Generator
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import Session, sessionmaker, declarative_base
 
 # Database URL fetched from environment or defaults to local SQLite file
 DB_URL = os.getenv("DB_URL", "sqlite:///./mcp.db")
@@ -15,7 +18,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-def get_session():
+def get_session() -> Generator[Session, None, None]:
     """Provide a transactional scope around a series of operations."""
     db = SessionLocal()
     try:

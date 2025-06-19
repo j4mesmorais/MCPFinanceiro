@@ -15,10 +15,11 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-3. Instale as dependências do projeto (SQLAlchemy e python-dotenv):
+3. Instale as dependências do projeto (SQLAlchemy e python-dotenv).  Caso
+   deseje utilizar migrações de banco, inclua também o Alembic:
 
 ```bash
-pip install sqlalchemy python-dotenv
+pip install sqlalchemy python-dotenv alembic
 ```
 
 4. Copie o arquivo `.env.example` para `.env` e ajuste os valores de `JWT_SECRET`
@@ -46,5 +47,7 @@ alembic init alembic
 alembic revision --autogenerate -m "mensagem"
 alembic upgrade head
 ```
+Esses comandos geram arquivos de revisão na pasta `alembic` e aplicam o
+upgrade para a versão mais recente do schema.
 
 
