@@ -12,9 +12,8 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from database import Base
 target_metadata = Base.metadata
 
-
-def should_include_object(obj, name, type_, reflected, compare_to):
-    """Return True if ``obj`` should be included during autogeneration."""
+def should_include_object(object, name, type_, reflected, compare_to):
+    """Return True if the object should be included in autogeneration."""
     # Skip dropping tables that exist in the database but are missing from the
     # SQLAlchemy models. This prevents ``DropTable`` operations from being
     # generated automatically.
