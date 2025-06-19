@@ -44,7 +44,19 @@ Caso deseje versionar e aplicar mudanças de esquema no banco, utilize o
 ```bash
 pip install sqlalchemy alembic
 alembic init alembic
-# configure o arquivo alembic.ini e gere as revisões
+# edite o arquivo `alembic/env.py` para importar a `Base` do projeto e definir
+# `target_metadata`. Isso é necessário para que o comando `--autogenerate`
+# consiga detectar as alterações nos modelos.
+#
+# ```python
+# from pathlib import Path
+# import sys
+# sys.path.append(str(Path(__file__).resolve().parents[1]))
+# from database import Base
+# target_metadata = Base.metadata
+# ```
+#
+# Com o `env.py` configurado, ajuste o `alembic.ini` e gere as revisões
 alembic revision --autogenerate -m "mensagem"
 alembic upgrade head
 ```
