@@ -47,17 +47,4 @@ alembic revision --autogenerate -m "mensagem"
 alembic upgrade head
 ```
 
-## Execução da aplicação
-
-Este repositório ainda não fornece um script de inicialização ou uma API
-completa. Após configurar o ambiente e o banco você pode importar o pacote
-`mcp_financeiro` no seu código ou criar um script próprio.
-
-## Testes
-
-Até o momento não há casos de teste incluídos no projeto.
-
-## CLI e endpoints REST
-
-Não existem comandos de CLI ou endpoints REST prontos neste repositório.
 
