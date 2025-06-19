@@ -19,7 +19,16 @@ router = APIRouter()
 TOOLS: Dict[str, Dict[str, Any]] = {
     "create_person": {
         "func": create_person,
-        "params": ["name", "email"],
+        "params": [
+            "name",
+            "email",
+            "celular",
+            "endereco",
+            "tipo",
+            "status",
+            "cpf_cnpj",
+            "dt_nascimento",
+        ],
         "description": "Create a new Person record",
     },
     "get_person": {
@@ -34,7 +43,17 @@ TOOLS: Dict[str, Dict[str, Any]] = {
     },
     "update_person": {
         "func": update_person,
-        "params": ["person_id", "name", "email"],
+        "params": [
+            "person_id",
+            "name",
+            "email",
+            "celular",
+            "endereco",
+            "tipo",
+            "status",
+            "cpf_cnpj",
+            "dt_nascimento",
+        ],
         "description": "Update fields of a Person",
     },
     "delete_person": {
