@@ -51,6 +51,20 @@ alembic upgrade head
 Esses comandos geram arquivos de revisão na pasta `alembic` e aplicam o
 upgrade para a versão mais recente do schema.
 
+### Atualizando o banco de dados
+
+Quando novas colunas ou tabelas são adicionadas aos modelos, é necessário gerar
+uma revisão e aplicá-la para manter o banco sincronizado:
+
+```bash
+alembic revision --autogenerate -m "minhas alterações"
+alembic upgrade head
+```
+
+Se a aplicação reportar `sqlalchemy.exc.OperationalError` informando que uma
+coluna não existe (por exemplo `no such column: people.celular`), o banco de
+dados provavelmente está desatualizado e precisa das migrações acima.
+
 ## Autenticação JWT
 
 A aplicação protege as rotas REST utilizando tokens JWT. Obtenha um token em
