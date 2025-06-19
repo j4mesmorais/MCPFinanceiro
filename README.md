@@ -16,10 +16,11 @@ source .venv/bin/activate
 ```
 
 3. Instale as dependências do projeto (SQLAlchemy e python-dotenv).  Caso
-   deseje utilizar migrações de banco, inclua também o Alembic:
+   deseje utilizar migrações de banco, inclua também o pacote
+   **sqlalchemy-migrate**:
 
 ```bash
-pip install sqlalchemy python-dotenv alembic
+pip install sqlalchemy python-dotenv sqlalchemy-migrate
 ```
 
 4. Copie o arquivo `.env.example` para `.env` e ajuste os valores de `JWT_SECRET`
@@ -36,47 +37,17 @@ banco de dados, defina a variável de ambiente `DB_URL` com a string de conexão
 export DB_URL=postgresql://usuario:senha@localhost:5432/minha_base
 ```
 
-### Migrações com Alembic
+### Migrações com ``migrate``
 
-Caso deseje versionar e aplicar mudanças de esquema no banco, utilize o
-[Alembic](https://alembic.sqlalchemy.org/):
-
-```bash
-pip install sqlalchemy alembic
-alembic init alembic
-# edite o arquivo `alembic/env.py` para importar a `Base` do projeto e definir
-# `target_metadata`. Isso é necessário para que o comando `--autogenerate`
-# consiga detectar as alterações nos modelos.
-#
-# ```python
-# from pathlib import Path
-# import sys
-# sys.path.append(str(Path(__file__).resolve().parents[1]))
-# from database import Base
-# target_metadata = Base.metadata
-# ```
-#
-# Com o `env.py` configurado, ajuste o `alembic.ini` e gere as revisões
-alembic revision --autogenerate -m "mensagem"
-alembic upgrade head
-```
-Esses comandos geram arquivos de revisão na pasta `alembic` e aplicam o
-upgrade para a versão mais recente do schema.
-
-O arquivo `alembic/env.py` já inclui uma função `should_include_object` que
-inibe a geração automática de `DropTable`. Assim, tabelas existentes não são
-removidas quando você executa `alembic revision --autogenerate`. Caso precise
-excluir uma tabela, edite manualmente a revisão gerada.
-
-### Atualizando o banco de dados
-
-Quando novas colunas ou tabelas são adicionadas aos modelos, é necessário gerar
-uma revisão e aplicá-la para manter o banco sincronizado:
+Para manter o esquema de banco sincronizado sem utilizar o Alembic, foi adicionado
+um pequeno script ``migrate_db.py``. Ele apenas cria todas as tabelas definidas
+nos modelos se ainda não existirem. Para executá‑lo:
 
 ```bash
-alembic revision --autogenerate -m "minhas alterações"
-alembic upgrade head
+python migrate_db.py
 ```
+
+Esse comando garante que o banco de dados possua as tabelas necessárias.
 
 Se a aplicação reportar `sqlalchemy.exc.OperationalError` informando que uma
 coluna não existe (por exemplo `no such column: people.celular`), o banco de
