@@ -2,15 +2,22 @@ version: '3.8'
 
 services:
   api:
-    image: meu-usuario/mcp_api:1.0   # sua imagem já publicada ou importada
+    image: mcp_api:1.0
     container_name: mcp_api
     restart: always
-    env_file:
-      - .env
+
     volumes:
-      - ./:/app               # opcional: monta código para hot-reload
-      - mcp_data:/app/mcp.db  # persiste o SQLite
+
+      - mcp_data:/app/data
+
+    environment:
+      SECRET_KEY: "your_jwt_secret"
+      ALGORITHM: "HS256"
+      ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+      DATABASE_URL: "sqlite:///./data/mcp.db"
+
     labels:
+
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_public"
       - "traefik.http.routers.mcp_api.rule=Host(`mcpfinanceiro.adjunto.com.br`)"
@@ -25,11 +32,13 @@ services:
       - "traefik.http.middlewares.mcp_api-security.headers.browserXssFilter=true"
       - "traefik.http.middlewares.mcp_api-security.headers.forceSTSHeader=true"
       - "traefik.http.middlewares.mcp_api-security.headers.frameDeny=true"
+
     deploy:
       resources:
         limits:
           memory: 512m
           cpus: '0.5'
+
     networks:
       - traefik_public
       - agent_network

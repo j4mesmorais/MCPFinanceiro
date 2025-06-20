@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from app.api.pessoas import router as pessoas_router
 from app.database import Base, engine
-
+from app.api.mcp import router as mcp_router
 # Cria as tabelas no startup
 Base.metadata.create_all(bind=engine)
 
@@ -15,7 +15,7 @@ app = FastAPI(
 
 # 1) Inclui todas as rotas de pessoas
 app.include_router(pessoas_router)
-
+app.include_router(mcp_router)
 # 2) Gera o OpenAPI customizado, adicionando securitySchemes e security global
 def custom_openapi():
     if app.openapi_schema:
